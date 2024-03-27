@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "sdl.h": "c",
+    "sdl_image.h": "c",
+    "csts.C": "cpp",
+    "csts.h": "c",
+    "stdlib.h": "c",
+    "stdint.h": "c",
+    "stdio.h": "c"
+  }
+}
