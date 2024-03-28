@@ -23,6 +23,23 @@ void RenderWindow::display()
 {
     SDL_RenderPresent(renderer);
 }
-void RenderWindow::render(Entity &p_entity, renderState p_state)
+void RenderWindow::render(Entity &p_entity)
 {
+    SDL_Rect src;
+    src = (SDL_Rect){p_entity.getSrcRect().x, p_entity.getSrcRect().y, p_entity.getSrcRect().w, p_entity.getSrcRect().h};
+    SDL_Rect dest;
+    dest = (SDL_Rect){p_entity.getDestRect().x, p_entity.getDestRect().y, p_entity.getDestRect().w, p_entity.getDestRect().h};
+    SDL_RendererFlip flip = p_entity.getRenderState() == Fliped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    SDL_RenderCopyEx(renderer, p_entity.getTexture(), &src, &dest, 0, NULL, flip);
+}
+
+SDL_Texture *RenderWindow::loadTexture(const char *p_filePath)
+{
+    SDL_Texture *texture = NULL;
+    texture = IMG_LoadTexture(renderer, p_filePath);
+    if (texture == NULL)
+    {
+        printf("Failed to load texture. SDL_Error: %s\n", SDL_GetError());
+    }
+    return texture;
 }
