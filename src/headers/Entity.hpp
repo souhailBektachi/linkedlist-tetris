@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "vector2d.hpp"
 #include "csts.hpp"
+#include "enums.hpp"
 
 typedef struct
 {
@@ -19,7 +20,7 @@ private:
     SDL_Rect destRect;
     Vector2D position;
     SDL_Texture *texture;
-    bool isFlipped;
+    renderState RenderState;
 
 public:
     Entity(float x, float y, SDL_Texture *texture, float h, float w);
@@ -30,10 +31,9 @@ public:
     void setTexture(SDL_Texture *p_texture);
     void setSrcRect(SDL_Rect p_srcRect);
     void setDestRect(SDL_Rect p_destRect);
-    void setFlipped(bool p_isFlipped);
+    void setRenderState(renderState state);
     SDL_Rect getSrcRect();
     SDL_Rect getDestRect();
     SDL_Texture *getTexture();
-    bool getFlipped();
-    void render(SDL_Renderer *renderer);
+    renderState getRenderState();
 };
