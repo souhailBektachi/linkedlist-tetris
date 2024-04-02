@@ -8,6 +8,7 @@ struct Node
     Block *block;
     struct Node *next;
     struct Node *prev;
+
     Node() : next(nullptr), prev(nullptr) {}
 };
 
@@ -16,6 +17,7 @@ class BlocksList
 private:
     Node *head;
     Node *tail;
+    Entity *destroyedBlocks;
     int size;
     void changePos();
     int maxSize;
@@ -35,4 +37,7 @@ public:
     void deleteList();
     void checkForMatches(Insertion insertion);
     void deleteMatch(Insertion insertion);
+    bool checkColors(Insertion insertion);
+    bool checkTypes(Insertion insertion);
+    void SpawnDestroyed(Block block);
 };

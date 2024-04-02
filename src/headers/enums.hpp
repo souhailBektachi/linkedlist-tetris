@@ -45,7 +45,7 @@ enum Insertion
     Tail
 };
 // Game enums
-typedef enum GameState
+enum GameState
 {
     Playing,
     GameOver,

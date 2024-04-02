@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -std=c++11 -g -I src/include -I src/headers
+CFLAGS = -Wall -Wextra -std=c++11 -g -I src/include -I src/headers 
 LDFLAGS = -L src/lib -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2main
 
 TARGET = game
@@ -18,7 +18,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm $(OBJ_DIR)/*.o
+	del /s /q $(OBJ_DIR)/*.o
 
 debug: CFLAGS += -DDEBUG
 debug: all

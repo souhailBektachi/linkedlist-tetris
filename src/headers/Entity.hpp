@@ -15,7 +15,7 @@ typedef struct
 
 class Entity
 {
-private:
+protected:
     SDL_Rect srcRect;
     SDL_Rect destRect;
     Vector2D position;
@@ -36,4 +36,5 @@ public:
     SDL_Rect getDestRect();
     SDL_Texture *getTexture();
     renderState getRenderState();
+    void cleanup();
 };
