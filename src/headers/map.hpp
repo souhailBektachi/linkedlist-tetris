@@ -12,13 +12,12 @@ private:
     const char *csvFile;
     SDL_Rect mapTilessize;
     Entity mapTiles[15][19];
-    int mapKets[285];
+    int mapKeys[285];
     SDL_Texture *mapTexture;
 
 public:
     Map(const char *csvFile, SDL_Texture *mapTexture);
     ~Map();
-    void createMap();
-    void render(RenderWindow &renderer, textureSize texSize);
+    void render(RenderWindow *renderer, textureSize texSize);
     void setRendered(bool p_rendered);
 };
