@@ -18,7 +18,6 @@ Entity::Entity()
 }
 Entity::~Entity()
 {
-    SDL_DestroyTexture(texture);
 }
 Vector2D Entity::getPosition()
 {
@@ -61,4 +60,8 @@ SDL_Texture *Entity::getTexture()
 renderState Entity::getRenderState()
 {
     return RenderState;
+}
+void Entity::cleanup()
+{
+    SDL_DestroyTexture(texture);
 }
