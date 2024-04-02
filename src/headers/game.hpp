@@ -10,22 +10,26 @@
 #include "block.hpp"
 #include "blocksList.hpp"
 #include "enums.hpp"
+#include "mainGame.hpp"
 using namespace std;
 
 class game
 {
 private:
-    const char *title;
     GameState gameState;
     RenderWindow *renderer;
     double deltaTime;
     bool isRunning;
+    void *Scene;
     void resetGame();
 
 public:
     game(const char *title);
     ~game();
+
     void handleEvents();
-    void update();
+    void changeScene(GameState state);
+    void update(double deltaTime);
     void render();
+    bool getRunning();
 };
