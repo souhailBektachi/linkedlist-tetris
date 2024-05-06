@@ -1,10 +1,10 @@
 #include "block.hpp"
 
 int Block::max[2] = {POSINIT - 32, POSINIT};
-
+int Block::Ids = 0;
 Block::Block(BlockType p_type, BlockColor p_color, int x, int y, int w, int h, RenderWindow *window) : Entity(x, y, nullptr, h, w)
 {
-
+    id = Ids++;
     type = p_type;
     color = p_color;
     Destroyed = false;
@@ -21,10 +21,8 @@ Block::~Block()
 }
 void Block::render(RenderWindow *window)
 {
-    if (!Destroyed)
-    {
-        window->render(this);
-    }
+
+    window->render(this);
 }
 
 void Block::setType(BlockType type)
@@ -54,6 +52,7 @@ bool Block::getDestroyed()
 void Block::destroy()
 {
     Destroyed = true;
+    BlocksUsed--;
 }
 void Block::getTexture(BlockType type, BlockColor color)
 {
@@ -131,11 +130,13 @@ void Block::decreaseMax(Inserted pos)
 {
     switch (pos)
     {
-    case left:
+    case Inserted::left:
         max[0] += 32 * NUMTOMATCH;
         break;
-    case right:
+    case Inserted::right:
         max[1] -= 32 * NUMTOMATCH;
+        break;
+    default:
         break;
     }
 }
@@ -175,4 +176,10 @@ void Block::resetMax()
 {
     max[0] = POSINIT - 32;
     max[1] = POSINIT;
+}
+void Block::changeColorType(BlockColor color, BlockType type)
+{
+    this->color = color;
+    this->type = type;
+    getTexture(type, color);
 }
