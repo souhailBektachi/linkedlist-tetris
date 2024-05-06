@@ -10,11 +10,13 @@ class Block : public Entity
 private:
     BlockType type;
     BlockColor color;
-    bool Movable;
     bool Destroyed;
-    static int max[2];
+    bool Movable;
+    static int Ids;
 
 public:
+    static int max[2];
+    int id;
     Block(BlockType p_type, BlockColor p_color, int x, int y, int w, int h, RenderWindow *window);
     Block();
     ~Block();
@@ -35,4 +37,5 @@ public:
     void getTexture(BlockType type, BlockColor color);
     static void loadTex(RenderWindow *renderer);
     static void resetMax();
+    void changeColorType(BlockColor color, BlockType type);
 };
