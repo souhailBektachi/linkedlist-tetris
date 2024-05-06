@@ -44,11 +44,51 @@ enum Insertion
     Head,
     Tail
 };
+enum ShiftType
+{
+    Type,
+    Color
+};
 // Game enums
 enum GameState
 {
     Playing,
     GameOver,
     GameWon,
-    Paused
+    Paused,
+    MainMenu,
+    Exit
+};
+enum ButtonState
+{
+    Hover,
+    Clicked,
+    normal
+};
+
+// icons
+enum IconType
+{
+    Home,
+    Play,
+    Pause,
+    Restart,
+    leftArrow,
+    rightArrow,
+
+};
+enum IconState
+{
+    iconNormal,
+    iconHover,
+};
+enum savedState
+{
+    saved,
+    empty
+};
+enum LoadSave
+{
+    Load,
+    Save
 };
