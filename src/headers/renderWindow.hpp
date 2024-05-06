@@ -1,10 +1,13 @@
 #pragma once
 class Entity;
+#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "Entity.hpp"
 #include "enums.hpp"
+using namespace std;
 class RenderWindow
 {
 private:
@@ -21,4 +24,10 @@ public:
     void clear();
     void rendernewcolor();
     void display();
+    SDL_Renderer *getRenderer();
+    TTF_Font *loadFont(const char *p_filePath, int p_size);
+    void renderText(const char *p_text, TTF_Font *p_font, SDL_Color p_color, int p_x, int p_y, int h, int w);
+    void renderTextWithmultipleColors(const char *p_text, TTF_Font *p_font, SDL_Color p_colors[], int p_x, int p_y);
+    void destroyFont(TTF_Font *p_font);
+    void ChangeFontColor(TTF_Font *p_font, SDL_Color p_color);
 };
