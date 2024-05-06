@@ -23,7 +23,7 @@ protected:
     renderState RenderState;
 
 public:
-    Entity(float x, float y, SDL_Texture *texture, float h, float w);
+    Entity(float x, float y, SDL_Texture *texture, int h, int w);
     Entity();
     ~Entity();
     Vector2D getPosition();
@@ -36,5 +36,6 @@ public:
     SDL_Rect getDestRect();
     SDL_Texture *getTexture();
     renderState getRenderState();
+    void setTextureOpacity(Uint8 opacity);
     void cleanup();
 };

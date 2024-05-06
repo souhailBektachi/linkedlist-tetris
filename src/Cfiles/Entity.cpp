@@ -1,7 +1,8 @@
 #include "Entity.hpp"
 
-Entity::Entity(float x, float y, SDL_Texture *texture, float h, float w)
+Entity::Entity(float x, float y, SDL_Texture *texture, int h, int w)
 {
+
     position = Vector2D(x, y);
     this->texture = texture;
     srcRect = {0, 0, (int)w, (int)h};
@@ -64,4 +65,8 @@ renderState Entity::getRenderState()
 void Entity::cleanup()
 {
     SDL_DestroyTexture(texture);
+}
+void Entity::setTextureOpacity(Uint8 opacity)
+{
+    SDL_SetTextureAlphaMod(texture, opacity);
 }
