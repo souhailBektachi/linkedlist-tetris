@@ -9,13 +9,24 @@
 #include "blocksList.hpp"
 #include "enums.hpp"
 #include <stdbool.h>
+#include "youlostwindow.hpp"
+#include "pause.hpp"
 using namespace std;
-typedef struct gameBlock
+struct gameBlock
 {
     Block *NextBlock;
     int numberofBlocks;
     BlocksList Blocklist;
-} gameBlock;
+};
+struct MaingameUi
+{
+    Entity LeftArrow;
+    Entity RightArrow;
+    SDL_Texture *left;
+    SDL_Texture *right;
+    SDL_Texture *leftPressed;
+    SDL_Texture *rightPressed;
+};
 class mainScene
 {
 private:
@@ -23,8 +34,15 @@ private:
     RenderWindow *renderer;
     Map *SceneMap;
     gameBlock gameBlocks;
+    MaingameUi ui;
+    bool UsedShift;
+    TTF_Font *score;
+    youLostwindow *lostWindow;
+    pause *pauseWindow;
 
 public:
+    bool lost;
+    bool paused;
     mainScene(RenderWindow **renderer);
     ~mainScene();
     void handleEvents(SDL_Event event);
@@ -33,4 +51,10 @@ public:
     void setRenderer(RenderWindow *renderer);
     void spawnBlock();
     void restart();
+    void handleEventsArrowsUp(SDL_Event event);
+    void initUi();
+    void lostGame();
+    void pauseGame();
+    youLostwindow *getLostWindow();
+    pause *getPauseWindow();
 };
