@@ -15,6 +15,10 @@ extern const int MAX;
 extern const int NUMTOMATCH;
 extern SDL_Texture *Globalcolors[4][4];
 extern SDL_Texture *destruction;
+extern SDL_Texture *gradientTexture;
+extern const char *FONTS[2];
+extern SDL_Texture *GlobalIcons[10][2];
+extern int BlocksUsed;
 
 #define HASH_SIZE 1000
 
