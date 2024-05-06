@@ -10,8 +10,16 @@
 #include "block.hpp"
 #include "blocksList.hpp"
 #include "enums.hpp"
+#include "menu.hpp"
 #include "mainGame.hpp"
+#include "youLostwindow.hpp"
 using namespace std;
+
+struct Scenes
+{
+    Menu *menu;
+    mainScene *mainGame;
+};
 
 class game
 {
@@ -20,6 +28,7 @@ private:
     RenderWindow *renderer;
     double deltaTime;
     bool isRunning;
+    Scenes scenes;
     void *Scene;
     void resetGame();
 
@@ -32,4 +41,7 @@ public:
     void update(double deltaTime);
     void render();
     bool getRunning();
+    void handleButtonsEvents();
+    void handlLostEvents();
+    void handlePauseEvents();
 };

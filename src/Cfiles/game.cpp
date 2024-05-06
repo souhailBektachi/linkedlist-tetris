@@ -14,16 +14,25 @@ game::game(const char *title)
             fprintf(stderr, "Unable to initialize SDL_image: %s\n", IMG_GetError());
         }
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+        if (TTF_Init() == -1)
+        {
+            printf("TTF_Init: %s\n", TTF_GetError());
+        }
         renderer = new RenderWindow(title, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         isRunning = true;
     }
-    gameState = Playing;
+    gameState = MainMenu;
     deltaTime = 0.0f;
+    scenes.menu = nullptr;
+    scenes.mainGame = nullptr;
+    Scene = nullptr;
+    icon::loadTex(renderer);
     changeScene(gameState);
 }
 game::~game()
 {
+    TTF_Quit();
 }
 void game::handleEvents()
 {
@@ -36,35 +45,103 @@ void game::handleEvents()
         case SDL_QUIT:
             isRunning = false;
             break;
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym)
+            {
+
+            case SDLK_p:
+                if (gameState == Playing)
+                    scenes.mainGame->paused = !scenes.mainGame->paused;
+                break;
+            }
 
         default:
             break;
         }
-        ((mainScene *)Scene)->handleEvents(event);
+        switch (gameState)
+        {
+        case MainMenu:
+            ((Menu *)Scene)->handleEvents(event);
+            break;
+        case Playing:
+            ((mainScene *)Scene)->handleEvents(event);
+            break;
+        case Exit:
+            isRunning = false;
+            break;
+        default:
+            break;
+        }
     }
+    handleButtonsEvents();
 }
 void game::changeScene(GameState state)
 {
+    Scene = nullptr;
     switch (state)
     {
     case Playing:
-        Scene = (void *)new mainScene(&renderer);
-        break;
+        if (scenes.mainGame == nullptr)
+        {
+            scenes.mainGame = new mainScene(&renderer);
+        }
 
+        Scene = (void *)scenes.mainGame;
+
+        break;
+    case MainMenu:
+        if (scenes.menu == nullptr)
+        {
+            scenes.menu = new Menu(&renderer);
+        }
+
+        Scene = (void *)scenes.menu;
+
+        break;
     default:
         break;
     }
 }
 void game::render()
 {
-    ((mainScene *)Scene)->render();
+    if (Scene == nullptr)
+        return;
+    switch (gameState)
+    {
+    case MainMenu:
+        ((Menu *)Scene)->render();
+        break;
+    case Playing:
+        ((mainScene *)Scene)->render();
+
+        break;
+
+    default:
+        break;
+    }
 }
 void game::update(double deltaTime)
 {
+    if (Scene == nullptr)
+        return;
     static int cycle = 0;
+    if (Scene == nullptr)
+        return;
 
     cycle++;
-    ((mainScene *)Scene)->update(cycle, deltaTime);
+    switch (gameState)
+    {
+    case MainMenu:
+        ((Menu *)Scene)->update(cycle, deltaTime);
+        break;
+    case Playing:
+        ((mainScene *)Scene)->update(cycle, deltaTime);
+        break;
+    default:
+
+        break;
+    }
+
     if (cycle == 120)
     {
         cycle = 0;
@@ -80,4 +157,70 @@ void game::resetGame()
 bool game::getRunning()
 {
     return isRunning;
+}
+void game::handleButtonsEvents()
+{
+    switch (gameState)
+    {
+    case MainMenu:
+        gameState = ((Menu *)Scene)->buttonsEvents();
+        changeScene(gameState);
+
+        break;
+    case Playing:
+        if (!scenes.mainGame->lost && !scenes.mainGame->paused)
+        {
+            break;
+        }
+        if (scenes.mainGame->lost)
+        {
+            handlLostEvents();
+        }
+        else if (scenes.mainGame->paused)
+        {
+            handlePauseEvents();
+        }
+
+        break;
+    default:
+        break;
+    }
+}
+void game::handlLostEvents()
+{
+    if (scenes.mainGame->getLostWindow()->getHome()->getClicked())
+    {
+        delete scenes.mainGame;
+        scenes.mainGame = nullptr;
+        gameState = MainMenu;
+        SDL_Delay(100);
+        changeScene(gameState);
+    }
+    else if (scenes.mainGame->getLostWindow()->getRestart()->getClicked())
+    {
+        ((mainScene *)Scene)->restart();
+        ((mainScene *)Scene)->getLostWindow()->getRestart()->setClicked(false);
+    }
+}
+void game::handlePauseEvents()
+{
+    if (scenes.mainGame->getPauseWindow()->getHome()->getClicked())
+    {
+        delete scenes.mainGame;
+        scenes.mainGame = nullptr;
+        gameState = MainMenu;
+        SDL_Delay(100);
+        changeScene(gameState);
+    }
+    else if (scenes.mainGame->getPauseWindow()->getRestart()->getClicked())
+    {
+        ((mainScene *)Scene)->restart();
+        ((mainScene *)Scene)->getPauseWindow()->getRestart()->setClicked(false);
+        scenes.mainGame->paused = false;
+    }
+    else if (scenes.mainGame->getPauseWindow()->getPlay()->getClicked())
+    {
+        scenes.mainGame->paused = false;
+        scenes.mainGame->getPauseWindow()->getPlay()->setClicked(false);
+    }
 }
