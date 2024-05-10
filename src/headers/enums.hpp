@@ -57,7 +57,8 @@ enum GameState
     GameWon,
     Paused,
     MainMenu,
-    Exit
+    Exit,
+    Saves,
 };
 enum ButtonState
 {

@@ -566,6 +566,7 @@ void BlocksList::saveList(const std::string &filename)
     {
         // Write score to file
         file.write(reinterpret_cast<const char *>(&score), sizeof(int));
+        file.write(reinterpret_cast<const char *>(&size), sizeof(int));
         // Write state variables to file
         Node *current = head;
         do
@@ -593,8 +594,10 @@ void BlocksList::loadList(const std::string &filename)
     if (file.is_open())
     {
         reset();
+        int Size;
 
         file.read(reinterpret_cast<char *>(&score), sizeof(int));
+        file.read(reinterpret_cast<char *>(&Size), sizeof(int));
         while (!file.eof())
         {
             BlockType type;
@@ -607,12 +610,14 @@ void BlocksList::loadList(const std::string &filename)
             insert(block);
         }
         file.close();
+        size = Size;
         std::cout << "BlocksList state loaded successfully." << std::endl;
     }
     else
     {
         std::cerr << "Unable to open file for reading." << std::endl;
     }
+    reassignBlocks();
 }
 void BlocksList::reset()
 {
@@ -620,4 +625,40 @@ void BlocksList::reset()
     score = 0;
     Block::resetMax();
     shifted = false;
+}
+void BlocksList::SaveLoadHighscore()
+{
+    std::string filePath = "saves/highscore.bin";
+    std::ifstream file(filePath, std::ios::in | std::ios::binary);
+    int P_highscore = 0;
+    if (file.good())
+    {
+        if (file.is_open())
+        {
+            file.read(reinterpret_cast<char *>(&P_highscore), sizeof(int));
+            file.close();
+        }
+        else
+        {
+            std::cerr << "Unable to open file for reading." << std::endl;
+        }
+    }
+    if (score > P_highscore)
+    {
+        HighScore = score;
+        std::ofstream file(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
+        if (file.is_open())
+        {
+            file.write(reinterpret_cast<const char *>(&score), sizeof(int));
+            file.close();
+        }
+        else
+        {
+            std::cerr << "Unable to open file for writing." << std::endl;
+        }
+    }
+    else
+    {
+        HighScore = P_highscore;
+    }
 }

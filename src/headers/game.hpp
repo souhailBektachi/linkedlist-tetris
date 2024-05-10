@@ -13,12 +13,14 @@
 #include "menu.hpp"
 #include "mainGame.hpp"
 #include "youLostwindow.hpp"
+#include "savesScene.hpp"
 using namespace std;
 
 struct Scenes
 {
     Menu *menu;
     mainScene *mainGame;
+    SavesScene *saves;
 };
 
 class game
@@ -44,4 +46,6 @@ public:
     void handleButtonsEvents();
     void handlLostEvents();
     void handlePauseEvents();
+    void handleSavesEvents();
+    void handleSavesFromGame();
 };

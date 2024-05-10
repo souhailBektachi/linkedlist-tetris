@@ -18,6 +18,9 @@ mainScene::mainScene(RenderWindow **renderer)
     lostWindow = new youLostwindow(renderer, "Score: 0");
     paused = false;
     pauseWindow = new pause(renderer);
+    savesScene = new SavesScene(renderer, LoadSave::Save, &gameBlocks.Blocklist);
+    gameBlocks.Blocklist.SaveLoadHighscore();
+    saved = false;
 }
 
 void mainScene::initUi()
@@ -34,10 +37,20 @@ void mainScene::initUi()
 mainScene::~mainScene()
 {
     delete SceneMap;
+    delete lostWindow;
+    delete pauseWindow;
+    delete savesScene;
+    SDL_DestroyTexture(ui.left);
+    SDL_DestroyTexture(ui.right);
+    SDL_DestroyTexture(ui.leftPressed);
+    SDL_DestroyTexture(ui.rightPressed);
+    delete gameBlocks.NextBlock;
+    gameBlocks.Blocklist.deleteList();
+    renderer->destroyFont(score);
 }
 void mainScene::handleEvents(SDL_Event event)
 {
-    if (!lost && !paused)
+    if (!lost && !paused && !saved)
     {
         if (event.type == SDL_KEYDOWN)
         {
@@ -72,12 +85,6 @@ void mainScene::handleEvents(SDL_Event event)
                     UsedShift = true;
                 }
                 break;
-            case SDLK_s:
-                gameBlocks.Blocklist.saveList("test.bin");
-                break;
-            case SDLK_l:
-                gameBlocks.Blocklist.loadList("test.bin");
-                break;
             }
         }
 
@@ -92,11 +99,17 @@ void mainScene::handleEvents(SDL_Event event)
             lostWindow->handleEvents(event);
         if (paused)
             pauseWindow->handleEvents(event);
+        if (saved)
+            savesScene->handleEvents(event);
     }
 }
 
 void mainScene::update(int cycle, double deltaTime)
 {
+    if (lost || paused)
+    {
+        gameBlocks.Blocklist.SaveLoadHighscore();
+    }
     if (lost)
     {
         lostWindow->update(cycle, deltaTime);
@@ -105,6 +118,11 @@ void mainScene::update(int cycle, double deltaTime)
     if (paused)
     {
         pauseWindow->update(cycle, deltaTime);
+        return;
+    }
+    if (saved)
+    {
+        savesScene->update(cycle, deltaTime);
         return;
     }
     Block *Theblock = gameBlocks.NextBlock;
@@ -137,6 +155,11 @@ void mainScene::spawnBlock()
 void mainScene::render()
 {
     renderer->clear();
+    if (saved)
+    {
+        savesScene->render();
+        return;
+    }
     SceneMap->render(renderer, (textureSize){9, 6});
     std::string scoreStr = "Score: " + std::to_string(gameBlocks.Blocklist.getScore());
 
@@ -205,4 +228,17 @@ pause *mainScene::getPauseWindow()
 void mainScene::pauseGame()
 {
     paused = true;
+}
+BlocksList *mainScene::getBlocksList()
+{
+    return &gameBlocks.Blocklist;
+}
+SavesScene *mainScene::getSavesScene()
+{
+    return savesScene;
+}
+
+void mainScene::setSaved(bool saved)
+{
+    this->saved = saved;
 }

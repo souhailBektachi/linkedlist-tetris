@@ -67,5 +67,6 @@ public:
     void setScore(int score);
     void saveList(const std::string &filename);
     void loadList(const std::string &filename);
+    void SaveLoadHighscore();
     void reset();
 };

@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include "youlostwindow.hpp"
 #include "pause.hpp"
+#include "savesScene.hpp"
 using namespace std;
 struct gameBlock
 {
@@ -38,11 +39,14 @@ private:
     bool UsedShift;
     TTF_Font *score;
     youLostwindow *lostWindow;
+    SavesScene *savesScene;
+
     pause *pauseWindow;
 
 public:
     bool lost;
     bool paused;
+    bool saved;
     mainScene(RenderWindow **renderer);
     ~mainScene();
     void handleEvents(SDL_Event event);
@@ -57,4 +61,7 @@ public:
     void pauseGame();
     youLostwindow *getLostWindow();
     pause *getPauseWindow();
+    SavesScene *getSavesScene();
+    BlocksList *getBlocksList();
+    void setSaved(bool saved);
 };

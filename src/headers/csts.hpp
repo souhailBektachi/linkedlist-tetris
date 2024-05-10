@@ -19,7 +19,7 @@ extern SDL_Texture *gradientTexture;
 extern const char *FONTS[2];
 extern SDL_Texture *GlobalIcons[10][2];
 extern int BlocksUsed;
-
+extern int HighScore;
 #define HASH_SIZE 1000
 
 #endif

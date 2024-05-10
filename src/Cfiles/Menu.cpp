@@ -98,6 +98,10 @@ GameState Menu::buttonsEvents()
     {
         return GameState::Exit;
     }
+    else if (uiElements.buttons[1].getState() == ButtonState::Clicked)
+    {
+        return GameState::Saves;
+    }
     else
     {
         return GameState::MainMenu;

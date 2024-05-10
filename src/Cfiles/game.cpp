@@ -26,6 +26,7 @@ game::game(const char *title)
     deltaTime = 0.0f;
     scenes.menu = nullptr;
     scenes.mainGame = nullptr;
+    scenes.saves = nullptr;
     Scene = nullptr;
     icon::loadTex(renderer);
     changeScene(gameState);
@@ -69,6 +70,9 @@ void game::handleEvents()
         case Exit:
             isRunning = false;
             break;
+        case Saves:
+            ((SavesScene *)Scene)->handleEvents(event);
+            break;
         default:
             break;
         }
@@ -98,6 +102,16 @@ void game::changeScene(GameState state)
         Scene = (void *)scenes.menu;
 
         break;
+    case Saves:
+        if (scenes.saves == nullptr)
+        {
+            scenes.mainGame = new mainScene(&renderer);
+            scenes.saves = new SavesScene(&renderer, LoadSave::Load, scenes.mainGame->getBlocksList());
+        }
+
+        Scene = (void *)scenes.saves;
+
+        break;
     default:
         break;
     }
@@ -114,6 +128,9 @@ void game::render()
     case Playing:
         ((mainScene *)Scene)->render();
 
+        break;
+    case Saves:
+        ((SavesScene *)Scene)->render();
         break;
 
     default:
@@ -137,6 +154,8 @@ void game::update(double deltaTime)
     case Playing:
         ((mainScene *)Scene)->update(cycle, deltaTime);
         break;
+    case Saves:
+        ((SavesScene *)Scene)->update(cycle, deltaTime);
     default:
 
         break;
@@ -168,10 +187,11 @@ void game::handleButtonsEvents()
 
         break;
     case Playing:
-        if (!scenes.mainGame->lost && !scenes.mainGame->paused)
+        if (!scenes.mainGame->lost && !scenes.mainGame->paused && !scenes.mainGame->saved)
         {
             break;
         }
+
         if (scenes.mainGame->lost)
         {
             handlLostEvents();
@@ -180,10 +200,17 @@ void game::handleButtonsEvents()
         {
             handlePauseEvents();
         }
+        else if (scenes.mainGame->saved)
+        {
 
-        break;
-    default:
-        break;
+            handleSavesFromGame();
+            break;
+        case Saves:
+            handleSavesEvents();
+            break;
+        default:
+            break;
+        }
     }
 }
 void game::handlLostEvents()
@@ -222,5 +249,51 @@ void game::handlePauseEvents()
     {
         scenes.mainGame->paused = false;
         scenes.mainGame->getPauseWindow()->getPlay()->setClicked(false);
+    }
+    else if (scenes.mainGame->getPauseWindow()->getSave()->getState() == ButtonState::Clicked)
+    {
+        scenes.mainGame->paused = false;
+        scenes.mainGame->getPauseWindow()->getPlay()->setClicked(false);
+        scenes.mainGame->setSaved(true);
+    }
+}
+void game::handleSavesEvents()
+{
+
+    if (((SavesScene *)Scene)->getHome()->getClicked())
+    {
+
+        delete scenes.saves;
+        scenes.saves = nullptr;
+        delete scenes.mainGame;
+        scenes.mainGame = nullptr;
+        gameState = MainMenu;
+        SDL_Delay(100);
+        changeScene(gameState);
+        return;
+    }
+
+    if (scenes.saves->getLoad())
+    {
+        scenes.mainGame->setSaved(false);
+        gameState = Playing;
+        SDL_Delay(100);
+        changeScene(gameState);
+    }
+}
+void game::handleSavesFromGame()
+{
+    if (scenes.mainGame->getSavesScene()->getHome()->getClicked())
+    {
+        delete scenes.mainGame;
+        scenes.mainGame = nullptr;
+        gameState = MainMenu;
+        SDL_Delay(100);
+        changeScene(gameState);
+    }
+    else if (scenes.mainGame->getSavesScene()->getPlay()->getClicked())
+    {
+        scenes.mainGame->setSaved(false);
+        scenes.mainGame->getSavesScene()->getPlay()->setClicked(false);
     }
 }

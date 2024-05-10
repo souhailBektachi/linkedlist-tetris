@@ -24,6 +24,10 @@ window::window()
 }
 void window::render()
 {
+
     renderer->render(&background);
     renderer->renderText(Title, fonts[0], (SDL_Color){253, 226, 148, 255}, 191, 133, 51, 226);
+    std::string highScoreText = "High Score: " + std::to_string(HighScore);
+    const char *HighScoreText = highScoreText.c_str();
+    renderer->renderText(HighScoreText, fonts[1], (SDL_Color){253, 226, 148, 255}, 8, 11, 29, 132);
 }

@@ -8,6 +8,7 @@ const int MAX_LINE_SIZE = 1024;
 const int POSINIT = (SCREEN_WIDTH / 2) - 16;
 const int MAX = 17;
 const int NUMTOMATCH = 3;
+int HighScore = 0;
 const char *FONTS[2] = {"assets/fonts/ChangaOne-Regular.ttf", "assets/fonts/Bungee-Regular.ttf"};
 
 SDL_Texture *Globalcolors[4][4];
